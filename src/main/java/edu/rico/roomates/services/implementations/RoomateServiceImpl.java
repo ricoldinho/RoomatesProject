@@ -1,5 +1,8 @@
 package edu.rico.roomates.services.implementations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,5 +28,17 @@ public class RoomateServiceImpl implements IRoomateService {
 
         return new RoomateResponseDTO(rSaved.getId(), rSaved.getFirstName(), rSaved.getLastName(), rSaved.getEmail(),
                 rSaved.getPhone(), rSaved.getGender(), rSaved.getDateOfBirth());
+    }
+
+    @Override
+    public List<RoomateResponseDTO> obtenerTodos() {
+        List<RoomateResponseDTO> listDTO = new ArrayList<>();
+        List<Roomate> listEntities = roomateRepo.findAll();
+        for (Roomate roomate : listEntities) {
+            listDTO.add(new RoomateResponseDTO(roomate.getId(), roomate.getFirstName(), roomate.getLastName(),
+                    roomate.getEmail(), roomate.getPhone(), roomate.getGender(), roomate.getDateOfBirth()));
+
+        }
+        return listDTO;
     }
 }

@@ -1,7 +1,10 @@
 package edu.rico.roomates.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +29,14 @@ public class RoomateRestController {
         RoomateResponseDTO rResponseDTO = roomateService.guardar(dto);
         return ResponseEntity.created(null).body(rResponseDTO);
     }
+
     // read => método .findAll() en el repository
+    @GetMapping("/all")
+    public ResponseEntity<List<RoomateResponseDTO>> obtenerTodos() {
+
+        return ResponseEntity.ok(roomateService.obtenerTodos());
+    }
+
     // read2 => método .findById() en el repository
     // update => método .save() en el repository
     // delete => método .delete() en el repository
