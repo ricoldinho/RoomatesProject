@@ -2,9 +2,11 @@ package edu.rico.roomates.services.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.rico.roomates.model.dtos.RoomateRequestDTO;
 import edu.rico.roomates.model.dtos.RoomateResponseDTO;
@@ -18,6 +20,7 @@ public class RoomateServiceImpl implements IRoomateService {
     private IRoomateRepository roomateRepo;
 
     @Override
+    @Transactional
     public RoomateResponseDTO guardar(RoomateRequestDTO dto) {
         // convertir el dto a entity
         Roomate r = new Roomate(dto.firstName(), dto.lastName(), dto.email(),
@@ -31,6 +34,7 @@ public class RoomateServiceImpl implements IRoomateService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RoomateResponseDTO> obtenerTodos() {
         List<RoomateResponseDTO> listDTO = new ArrayList<>();
         List<Roomate> listEntities = roomateRepo.findAll();
@@ -41,4 +45,29 @@ public class RoomateServiceImpl implements IRoomateService {
         }
         return listDTO;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RoomateResponseDTO obtenerPorId(Long id) {
+        Optional<Roomate> opt = roomateRepo.findById(id);
+        if (opt.isEmpty()) {
+            throw new IllegalArgumentException("id no encontrado");
+        }
+        Roomate r = opt.get();
+        return new RoomateResponseDTO(r.getId(), r.getFirstName(), r.getLastName(), r.getEmail(), r.getPhone(),
+                r.getGender(), r.getDateOfBirth());
+    }
+
+    @Override
+    @Transactional
+    public boolean eliminar(Long id) {
+        boolean b = roomateRepo.existsById(id);
+        if (b) {
+            roomateRepo.deleteById(id);
+            return true;
+        }
+        return false;
+
+    }
+
 }

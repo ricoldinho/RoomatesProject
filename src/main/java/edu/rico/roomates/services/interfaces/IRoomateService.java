@@ -9,4 +9,8 @@ public interface IRoomateService {
     public RoomateResponseDTO guardar(RoomateRequestDTO dto);
 
     public List<RoomateResponseDTO> obtenerTodos();
+
+    public RoomateResponseDTO obtenerPorId(Long id);
+
+    public boolean eliminar(Long id);
 }
