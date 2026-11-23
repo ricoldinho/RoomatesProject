@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.rico.roomates.model.dtos.RoomateRequestDTO;
 import edu.rico.roomates.model.dtos.RoomateResponseDTO;
+import edu.rico.roomates.model.enums.Gender;
 import edu.rico.roomates.services.interfaces.IRoomateService;
 
 @RestController
@@ -52,6 +54,12 @@ public class RoomateRestController {
     }
 
     // update => método .save() en el repository
+    @PutMapping
+    public ResponseEntity<RoomateResponseDTO> actualizarRoomate(@RequestBody RoomateRequestDTO dto) {
+        // TODO: process PUT request
+        RoomateResponseDTO responseDTO = roomateService.actualizar(dto);
+        return ResponseEntity.ok(responseDTO);
+    }
 
     // delete => método .delete() en el repository
     @DeleteMapping("/{id}")
@@ -61,4 +69,11 @@ public class RoomateRestController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/genero/{gender}")
+    public ResponseEntity<List<RoomateResponseDTO>> getPorGenero(@PathVariable Gender gender) {
+
+        return ResponseEntity.ok(roomateService.buscarPorGenero(gender));
+    }
+
 }

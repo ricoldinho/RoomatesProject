@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.rico.roomates.model.dtos.RoomateRequestDTO;
 import edu.rico.roomates.model.dtos.RoomateResponseDTO;
 import edu.rico.roomates.model.entities.Roomate;
+import edu.rico.roomates.model.enums.Gender;
 import edu.rico.roomates.repositories.IRoomateRepository;
 import edu.rico.roomates.services.interfaces.IRoomateService;
 
@@ -68,6 +69,36 @@ public class RoomateServiceImpl implements IRoomateService {
         }
         return false;
 
+    }
+
+    @Override
+    @Transactional
+    public RoomateResponseDTO actualizar(RoomateRequestDTO dto) {
+        Roomate r = roomateRepo.findByEmail(dto.email());
+        if (r == null) {
+            throw new IllegalArgumentException("Email no encontrado");
+        }
+        r.setFirstName(dto.firstName());
+        r.setLastName(dto.lastName());
+        r.setPhone(dto.phone());
+        r.setGender(dto.gender());
+        r.setDateOfBirth(dto.dateOfBirth());
+        r.setPassword(dto.password());
+
+        Roomate rUpdated = roomateRepo.save(r);
+        return new RoomateResponseDTO(rUpdated.getId(), rUpdated.getFirstName(), rUpdated.getLastName(),
+                rUpdated.getEmail(), rUpdated.getPhone(), rUpdated.getGender(), rUpdated.getDateOfBirth());
+    }
+
+    @Override
+    public List<RoomateResponseDTO> buscarPorGenero(Gender genero) {
+        List<Roomate> listE = roomateRepo.findByGender(genero);
+        List<RoomateResponseDTO> listDtos = new ArrayList<>();
+        for (Roomate roomate : listE) {
+            listDtos.add(new RoomateResponseDTO(roomate.getId(), roomate.getFirstName(), roomate.getLastName(),
+                    roomate.getEmail(), roomate.getPhone(), genero, roomate.getDateOfBirth()));
+        }
+        return listDtos;
     }
 
 }
